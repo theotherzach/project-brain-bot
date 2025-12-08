@@ -11,7 +11,7 @@ class TestEmbeddings:
     @pytest.fixture
     def mock_openai_client(self):
         """Create a mock OpenAI client."""
-        with patch("openai.OpenAI") as mock:
+        with patch("src.retrieval.embeddings.OpenAI") as mock:
             client = MagicMock()
             mock.return_value = client
             yield client
@@ -68,10 +68,10 @@ class TestVectorStore:
     @pytest.fixture
     def mock_pinecone_client(self):
         """Create a mock Pinecone client."""
-        with patch("pinecone.Pinecone") as mock:
+        with patch("src.retrieval.vectorstore.Pinecone") as mock:
             pc = MagicMock()
             mock.return_value = pc
-            pc.list_indexes.return_value = [MagicMock(name="project-brain")]
+            pc.list_indexes.return_value = [MagicMock(name="test-index")]
             yield pc
 
     @patch("src.retrieval.vectorstore.get_embedding_client")
