@@ -14,7 +14,8 @@ COPY pyproject.toml ./
 COPY src/ ./src/
 
 # Install Python dependencies
-RUN pip install --no-cache-dir .
+RUN pip install --no-cache-dir hatchling && \
+    pip install --no-cache-dir .
 
 FROM python:3.11-slim
 
