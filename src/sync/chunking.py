@@ -1,6 +1,7 @@
 """Document chunking for embedding."""
 
 from dataclasses import dataclass
+from functools import lru_cache
 
 import tiktoken
 
@@ -188,13 +189,7 @@ class DocumentChunker:
         return chunks
 
 
-# Singleton instance
-_chunker: DocumentChunker | None = None
-
-
+@lru_cache(maxsize=1)
 def get_chunker() -> DocumentChunker:
     """Get or create document chunker instance."""
-    global _chunker
-    if _chunker is None:
-        _chunker = DocumentChunker()
-    return _chunker
+    return DocumentChunker()

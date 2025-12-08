@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     # Anthropic
     anthropic_api_key: str = Field(..., description="Anthropic API Key")
     claude_model: str = Field(
-        default="claude-sonnet-4-5-20250514", description="Claude model to use"
+        default="claude-sonnet-4-5-20250929", description="Claude model to use"
     )
 
     # OpenAI (for embeddings)

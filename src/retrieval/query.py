@@ -1,5 +1,6 @@
 """RAG query logic for retrieving and formatting context."""
 
+from functools import lru_cache
 from typing import Any
 
 from src.config import get_settings
@@ -190,13 +191,7 @@ class RAGQueryEngine:
         }
 
 
-# Singleton instance
-_engine: RAGQueryEngine | None = None
-
-
+@lru_cache(maxsize=1)
 def get_rag_engine() -> RAGQueryEngine:
     """Get or create RAG query engine instance."""
-    global _engine
-    if _engine is None:
-        _engine = RAGQueryEngine()
-    return _engine
+    return RAGQueryEngine()

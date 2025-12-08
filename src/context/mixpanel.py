@@ -2,6 +2,7 @@
 
 import base64
 from datetime import datetime, timedelta
+from functools import lru_cache
 from typing import Any
 
 import httpx
@@ -184,13 +185,7 @@ class MixpanelClient:
         return documents
 
 
-# Singleton instance
-_client: MixpanelClient | None = None
-
-
+@lru_cache(maxsize=1)
 def get_mixpanel_client() -> MixpanelClient:
     """Get or create Mixpanel client instance."""
-    global _client
-    if _client is None:
-        _client = MixpanelClient()
-    return _client
+    return MixpanelClient()

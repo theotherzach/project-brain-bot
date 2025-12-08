@@ -1,5 +1,7 @@
 """Pinecone vector store for document retrieval."""
 
+import time
+from functools import lru_cache
 from typing import Any
 
 from pinecone import Pinecone, ServerlessSpec
@@ -39,6 +41,13 @@ class VectorStore:
                         region="us-east-1",
                     ),
                 )
+                # Wait for index to be ready (async creation)
+                for _ in range(60):  # Wait up to 60 seconds
+                    desc = self.pc.describe_index(self.index_name)
+                    if desc.status.ready:
+                        break
+                    logger.debug("waiting_for_index", name=self.index_name)
+                    time.sleep(1)
 
             self._index = self.pc.Index(self.index_name)
         return self._index
@@ -193,13 +202,7 @@ class VectorStore:
             return {}
 
 
-# Singleton instance
-_store: VectorStore | None = None
-
-
+@lru_cache(maxsize=1)
 def get_vector_store() -> VectorStore:
     """Get or create vector store instance."""
-    global _store
-    if _store is None:
-        _store = VectorStore()
-    return _store
+    return VectorStore()

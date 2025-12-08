@@ -53,6 +53,9 @@ def register_handlers(app: App) -> None:
 
             # Send thinking message
             thinking_response = say(blocks=format_thinking_message())
+            thinking_ts = (
+                thinking_response.get("ts") if isinstance(thinking_response, dict) else None
+            )
 
             # Process the question
             _process_question(
@@ -60,7 +63,7 @@ def register_handlers(app: App) -> None:
                 channel=event["channel"],
                 thread_ts=event.get("thread_ts") or event.get("ts"),
                 client=client,
-                thinking_ts=thinking_response.get("ts"),
+                thinking_ts=thinking_ts,
             )
 
         except Exception as e:
@@ -85,6 +88,9 @@ def register_handlers(app: App) -> None:
 
             # Send thinking message
             thinking_response = say(blocks=format_thinking_message())
+            thinking_ts = (
+                thinking_response.get("ts") if isinstance(thinking_response, dict) else None
+            )
 
             # Process the question
             _process_question(
@@ -92,7 +98,7 @@ def register_handlers(app: App) -> None:
                 channel=event["channel"],
                 thread_ts=event.get("thread_ts") or event.get("ts"),
                 client=client,
-                thinking_ts=thinking_response.get("ts"),
+                thinking_ts=thinking_ts,
             )
 
         except Exception as e:
@@ -124,6 +130,9 @@ def register_handlers(app: App) -> None:
                 channel=channel,
                 blocks=format_thinking_message(),
             )
+            thinking_ts = (
+                thinking_response.get("ts") if isinstance(thinking_response, dict) else None
+            )
 
             # Process the question
             _process_question(
@@ -131,7 +140,7 @@ def register_handlers(app: App) -> None:
                 channel=channel,
                 thread_ts=None,
                 client=client,
-                thinking_ts=thinking_response.get("ts"),
+                thinking_ts=thinking_ts,
             )
 
         except Exception as e:

@@ -1,6 +1,7 @@
 """Datadog API integration for monitoring context."""
 
 from datetime import datetime, timedelta
+from functools import lru_cache
 from typing import Any
 
 import httpx
@@ -258,13 +259,7 @@ class DatadogClient:
         return documents
 
 
-# Singleton instance
-_client: DatadogClient | None = None
-
-
+@lru_cache(maxsize=1)
 def get_datadog_client() -> DatadogClient:
     """Get or create Datadog client instance."""
-    global _client
-    if _client is None:
-        _client = DatadogClient()
-    return _client
+    return DatadogClient()

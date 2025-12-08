@@ -1,6 +1,7 @@
 """Linear API integration for project management context."""
 
 from datetime import datetime
+from functools import lru_cache
 from typing import Any
 
 import httpx
@@ -193,13 +194,7 @@ class LinearClient:
             return []
 
 
-# Singleton instance
-_client: LinearClient | None = None
-
-
+@lru_cache(maxsize=1)
 def get_linear_client() -> LinearClient:
     """Get or create Linear client instance."""
-    global _client
-    if _client is None:
-        _client = LinearClient()
-    return _client
+    return LinearClient()
