@@ -180,9 +180,7 @@ class DatadogClient:
                         "severity": attrs.get("severity"),
                         "state": attrs.get("state"),
                     },
-                    created_at=datetime.fromisoformat(
-                        attrs["created"].replace("Z", "+00:00")
-                    )
+                    created_at=datetime.fromisoformat(attrs["created"].replace("Z", "+00:00"))
                     if attrs.get("created")
                     else None,
                 )

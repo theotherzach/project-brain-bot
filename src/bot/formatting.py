@@ -23,13 +23,15 @@ def format_response_blocks(
     blocks: list[dict[str, Any]] = []
 
     # Main answer section
-    blocks.append({
-        "type": "section",
-        "text": {
-            "type": "mrkdwn",
-            "text": answer,
-        },
-    })
+    blocks.append(
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": answer,
+            },
+        }
+    )
 
     # Add sources if available
     if sources:
@@ -41,27 +43,31 @@ def format_response_blocks(
             name = _extract_source_name(url)
             source_links.append(f"{i}. <{url}|{name}>")
 
-        blocks.append({
-            "type": "context",
-            "elements": [
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Sources:*\n" + "\n".join(source_links),
-                }
-            ],
-        })
+        blocks.append(
+            {
+                "type": "context",
+                "elements": [
+                    {
+                        "type": "mrkdwn",
+                        "text": "*Sources:*\n" + "\n".join(source_links),
+                    }
+                ],
+            }
+        )
 
     # Add context info
     if context_count > 0:
-        blocks.append({
-            "type": "context",
-            "elements": [
-                {
-                    "type": "mrkdwn",
-                    "text": f"_Based on {context_count} document(s) from project sources_",
-                }
-            ],
-        })
+        blocks.append(
+            {
+                "type": "context",
+                "elements": [
+                    {
+                        "type": "mrkdwn",
+                        "text": f"_Based on {context_count} document(s) from project sources_",
+                    }
+                ],
+            }
+        )
 
     return blocks
 
@@ -195,10 +201,10 @@ def format_help_message() -> list[dict[str, Any]]:
                 "type": "mrkdwn",
                 "text": (
                     "*Example questions:*\n"
-                    "• \"What's the status of the auth refactor?\"\n"
-                    "• \"Who's working on the payment integration?\"\n"
-                    "• \"What did we decide in the last sprint planning?\"\n"
-                    "• \"Are there any active alerts right now?\""
+                    '• "What\'s the status of the auth refactor?"\n'
+                    '• "Who\'s working on the payment integration?"\n'
+                    '• "What did we decide in the last sprint planning?"\n'
+                    '• "Are there any active alerts right now?"'
                 ),
             },
         },

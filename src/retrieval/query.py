@@ -159,9 +159,7 @@ class RAGQueryEngine:
         # Add live context if available
         if live_documents:
             live_context = "\n\n---\n\nLive Context:\n\n"
-            live_context += "\n\n".join(
-                doc.to_context_string() for doc in live_documents[:5]
-            )
+            live_context += "\n\n".join(doc.to_context_string() for doc in live_documents[:5])
             context += live_context
 
         # 6. Generate answer

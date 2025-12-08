@@ -82,8 +82,9 @@ class ClaudeClient:
         Returns:
             List of search queries
         """
-        from src.llm.prompts import RAG_QUERY_PROMPT
         import json
+
+        from src.llm.prompts import RAG_QUERY_PROMPT
 
         logger.debug("generating_search_queries", question=question[:100])
 

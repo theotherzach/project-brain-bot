@@ -47,18 +47,20 @@ def sync_linear() -> int:
             )
 
             for chunk in chunks:
-                documents.append({
-                    "id": chunk.id,
-                    "text": chunk.text,
-                    "metadata": {
-                        "source": chunk.source,
-                        "title": chunk.title,
-                        "url": chunk.url,
-                        "chunk_index": chunk.chunk_index,
-                        "total_chunks": chunk.total_chunks,
-                        **(chunk.metadata or {}),
-                    },
-                })
+                documents.append(
+                    {
+                        "id": chunk.id,
+                        "text": chunk.text,
+                        "metadata": {
+                            "source": chunk.source,
+                            "title": chunk.title,
+                            "url": chunk.url,
+                            "chunk_index": chunk.chunk_index,
+                            "total_chunks": chunk.total_chunks,
+                            **(chunk.metadata or {}),
+                        },
+                    }
+                )
 
         # Upsert to vector store
         count = vector_store.upsert_documents(documents)

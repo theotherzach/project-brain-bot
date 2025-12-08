@@ -56,9 +56,7 @@ class QuestionClassifier:
                 sources = result.get("sources", [])
 
                 # Validate sources
-                valid_sources: list[SourceType] = [
-                    s for s in sources if s in ALL_SOURCES
-                ]
+                valid_sources: list[SourceType] = [s for s in sources if s in ALL_SOURCES]
 
                 if not valid_sources:
                     logger.warning(

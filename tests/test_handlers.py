@@ -2,8 +2,6 @@
 
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 
 class TestSlackHandlers:
     """Tests for Slack bot handlers."""

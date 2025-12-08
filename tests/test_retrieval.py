@@ -2,8 +2,6 @@
 
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 
 class TestEmbeddings:
     """Tests for embedding generation."""
@@ -72,9 +70,7 @@ class TestVectorStore:
 
     @patch("src.retrieval.vectorstore.Pinecone")
     @patch("src.retrieval.vectorstore.get_embedding_client")
-    def test_query_filters_by_threshold(
-        self, mock_get_embedding, mock_pinecone, mock_env_vars
-    ):
+    def test_query_filters_by_threshold(self, mock_get_embedding, mock_pinecone, mock_env_vars):
         """Test that query filters results below similarity threshold."""
         from src.retrieval.vectorstore import VectorStore
 

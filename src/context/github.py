@@ -83,7 +83,7 @@ class GitHubClient:
                     content_parts.append("Merged: Yes")
 
                 if pr.get("labels"):
-                    labels = [l["name"] for l in pr["labels"]]
+                    labels = [label["name"] for label in pr["labels"]]
                     content_parts.append(f"Labels: {', '.join(labels)}")
 
                 doc = ContextDocument(
@@ -155,7 +155,7 @@ class GitHubClient:
                 content_parts.append(f"Author: {issue['user']['login']}")
 
                 if issue.get("labels"):
-                    labels = [l["name"] for l in issue["labels"]]
+                    labels = [label["name"] for label in issue["labels"]]
                     content_parts.append(f"Labels: {', '.join(labels)}")
 
                 if issue.get("assignee"):
@@ -216,9 +216,7 @@ class GitHubClient:
             return []
 
         # Build repo filter for search
-        repo_filter = " ".join(
-            [f"repo:{repo}" for repo in self.settings.github_repo_list]
-        )
+        repo_filter = " ".join([f"repo:{repo}" for repo in self.settings.github_repo_list])
         if not repo_filter:
             return []
 

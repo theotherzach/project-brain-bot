@@ -69,7 +69,7 @@ class VectorStore:
 
         # Prepare vectors for upsert
         vectors = []
-        for doc, embedding in zip(documents, embeddings):
+        for doc, embedding in zip(documents, embeddings, strict=True):
             vector = {
                 "id": doc["id"],
                 "values": embedding,

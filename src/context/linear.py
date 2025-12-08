@@ -100,7 +100,7 @@ class LinearClient:
                 if issue.get("assignee"):
                     content_parts.append(f"Assignee: {issue['assignee']['name']}")
 
-                labels = [l["name"] for l in issue.get("labels", {}).get("nodes", [])]
+                labels = [label["name"] for label in issue.get("labels", {}).get("nodes", [])]
                 if labels:
                     content_parts.append(f"Labels: {', '.join(labels)}")
 

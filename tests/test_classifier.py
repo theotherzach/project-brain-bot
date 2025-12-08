@@ -2,8 +2,6 @@
 
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 
 class TestQuestionClassifier:
     """Tests for the question classifier."""
@@ -58,7 +56,9 @@ class TestQuestionClassifier:
 
         message = MagicMock()
         message.content = [
-            MagicMock(text='{"sources": ["linear", "invalid_source", "notion"], "reasoning": "test"}')
+            MagicMock(
+                text='{"sources": ["linear", "invalid_source", "notion"], "reasoning": "test"}'
+            )
         ]
         mock_client.messages.create.return_value = message
 

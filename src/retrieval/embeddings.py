@@ -76,7 +76,7 @@ class EmbeddingClient:
             return [[0.0] * self.dimensions for _ in texts]
 
         try:
-            indices, batch_texts = zip(*valid_texts)
+            indices, batch_texts = zip(*valid_texts, strict=True)
             response = self.client.embeddings.create(
                 model=self.model,
                 input=list(batch_texts),

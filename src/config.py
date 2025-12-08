@@ -47,15 +47,11 @@ class Settings(BaseSettings):
 
     # Notion
     notion_api_key: str = Field(default="", description="Notion Integration Token")
-    notion_database_ids: str = Field(
-        default="", description="Comma-separated Notion database IDs"
-    )
+    notion_database_ids: str = Field(default="", description="Comma-separated Notion database IDs")
 
     # GitHub
     github_token: str = Field(default="", description="GitHub Personal Access Token")
-    github_repos: str = Field(
-        default="", description="Comma-separated GitHub repos (owner/repo)"
-    )
+    github_repos: str = Field(default="", description="Comma-separated GitHub repos (owner/repo)")
 
     # Mixpanel
     mixpanel_api_secret: str = Field(default="", description="Mixpanel API Secret")
@@ -73,9 +69,7 @@ class Settings(BaseSettings):
 
     # RAG settings
     retrieval_top_k: int = Field(default=5, description="Number of results to retrieve")
-    similarity_threshold: float = Field(
-        default=0.7, description="Minimum similarity score"
-    )
+    similarity_threshold: float = Field(default=0.7, description="Minimum similarity score")
 
     @property
     def notion_database_id_list(self) -> list[str]:

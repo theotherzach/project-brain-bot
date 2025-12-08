@@ -32,9 +32,7 @@ class NotionClient:
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=2, max=10),
     )
-    def _request(
-        self, method: str, endpoint: str, json_data: dict | None = None
-    ) -> dict[str, Any]:
+    def _request(self, method: str, endpoint: str, json_data: dict | None = None) -> dict[str, Any]:
         """Make a request to Notion API."""
         with httpx.Client(timeout=30) as client:
             response = client.request(
@@ -96,9 +94,7 @@ class NotionClient:
                     content_parts.append(f"{checkbox} {text}")
 
             elif block_type == "code":
-                text = self._extract_text_from_rich_text(
-                    block.get("code", {}).get("rich_text", [])
-                )
+                text = self._extract_text_from_rich_text(block.get("code", {}).get("rich_text", []))
                 language = block.get("code", {}).get("language", "")
                 if text:
                     content_parts.append(f"```{language}\n{text}\n```")
@@ -141,7 +137,7 @@ class NotionClient:
 
                 # Extract title from properties
                 title = "Untitled"
-                for prop_name, prop_value in page.get("properties", {}).items():
+                for _prop_name, prop_value in page.get("properties", {}).items():
                     if prop_value.get("type") == "title":
                         title_items = prop_value.get("title", [])
                         if title_items:
@@ -164,9 +160,7 @@ class NotionClient:
                     metadata={
                         "database_id": database_id,
                     },
-                    created_at=datetime.fromisoformat(
-                        page["created_time"].replace("Z", "+00:00")
-                    )
+                    created_at=datetime.fromisoformat(page["created_time"].replace("Z", "+00:00"))
                     if page.get("created_time")
                     else None,
                     updated_at=datetime.fromisoformat(
@@ -224,7 +218,7 @@ class NotionClient:
 
                 # Extract title
                 title = "Untitled"
-                for prop_name, prop_value in page.get("properties", {}).items():
+                for _prop_name, prop_value in page.get("properties", {}).items():
                     if prop_value.get("type") == "title":
                         title_items = prop_value.get("title", [])
                         if title_items:
