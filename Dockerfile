@@ -9,10 +9,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
+# Copy project files needed for install
 COPY pyproject.toml ./
-RUN pip install --no-cache-dir build && \
-    pip install --no-cache-dir .
+COPY src/ ./src/
+
+# Install Python dependencies
+RUN pip install --no-cache-dir .
 
 FROM python:3.11-slim
 
