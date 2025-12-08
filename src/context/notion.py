@@ -1,6 +1,7 @@
 """Notion API integration for documentation context."""
 
 from datetime import datetime
+from functools import lru_cache
 from typing import Any
 
 import httpx
@@ -248,13 +249,7 @@ class NotionClient:
             return []
 
 
-# Singleton instance
-_client: NotionClient | None = None
-
-
+@lru_cache(maxsize=1)
 def get_notion_client() -> NotionClient:
     """Get or create Notion client instance."""
-    global _client
-    if _client is None:
-        _client = NotionClient()
-    return _client
+    return NotionClient()

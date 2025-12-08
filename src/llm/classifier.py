@@ -1,6 +1,7 @@
 """Question classification for routing to appropriate data sources."""
 
 import json
+from functools import lru_cache
 from typing import Literal
 
 import anthropic
@@ -48,12 +49,16 @@ class QuestionClassifier:
                 ],
             )
 
+            if not message.content or not hasattr(message.content[0], "text"):
+                return ["notion", "linear"]  # Default fallback
             response_text = message.content[0].text.strip()
 
             # Parse JSON response
             try:
                 result = json.loads(response_text)
                 sources = result.get("sources", [])
+                if not isinstance(sources, list):
+                    sources = []
 
                 # Validate sources
                 valid_sources: list[SourceType] = [s for s in sources if s in ALL_SOURCES]
@@ -84,13 +89,7 @@ class QuestionClassifier:
             return ["notion", "linear"]  # Default fallback
 
 
-# Singleton instance
-_classifier: QuestionClassifier | None = None
-
-
+@lru_cache(maxsize=1)
 def get_classifier() -> QuestionClassifier:
     """Get or create classifier instance."""
-    global _classifier
-    if _classifier is None:
-        _classifier = QuestionClassifier()
-    return _classifier
+    return QuestionClassifier()

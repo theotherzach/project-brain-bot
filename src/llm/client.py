@@ -1,5 +1,7 @@
 """Claude client for generating responses."""
 
+from functools import lru_cache
+
 import anthropic
 
 from src.config import get_settings
@@ -57,6 +59,9 @@ class ClaudeClient:
                 messages=messages,
             )
 
+            if not response.content or not hasattr(response.content[0], "text"):
+                logger.error("empty_response_from_claude")
+                return "I received an empty response. Please try again."
             answer = response.content[0].text
             logger.info(
                 "response_generated",
@@ -100,6 +105,8 @@ class ClaudeClient:
                 ],
             )
 
+            if not response.content or not hasattr(response.content[0], "text"):
+                return [question]
             response_text = response.content[0].text.strip()
 
             try:
@@ -117,13 +124,7 @@ class ClaudeClient:
             return [question]
 
 
-# Singleton instance
-_client: ClaudeClient | None = None
-
-
+@lru_cache(maxsize=1)
 def get_claude_client() -> ClaudeClient:
     """Get or create Claude client instance."""
-    global _client
-    if _client is None:
-        _client = ClaudeClient()
-    return _client
+    return ClaudeClient()

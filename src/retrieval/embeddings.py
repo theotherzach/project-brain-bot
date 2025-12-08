@@ -1,5 +1,7 @@
 """OpenAI embeddings for semantic search."""
 
+from functools import lru_cache
+
 import tiktoken
 from openai import OpenAI
 
@@ -46,6 +48,9 @@ class EmbeddingClient:
                 model=self.model,
                 input=text,
             )
+            if not response.data:
+                logger.error("empty_embedding_response")
+                return [0.0] * self.dimensions
             embedding = response.data[0].embedding
             logger.debug(
                 "text_embedded",
@@ -100,13 +105,7 @@ class EmbeddingClient:
             raise
 
 
-# Singleton instance
-_client: EmbeddingClient | None = None
-
-
+@lru_cache(maxsize=1)
 def get_embedding_client() -> EmbeddingClient:
     """Get or create embedding client instance."""
-    global _client
-    if _client is None:
-        _client = EmbeddingClient()
-    return _client
+    return EmbeddingClient()

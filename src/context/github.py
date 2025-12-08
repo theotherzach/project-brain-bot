@@ -1,6 +1,7 @@
 """GitHub API integration for code and PR context."""
 
 from datetime import datetime
+from functools import lru_cache
 from typing import Any
 
 import httpx
@@ -250,13 +251,7 @@ class GitHubClient:
             return []
 
 
-# Singleton instance
-_client: GitHubClient | None = None
-
-
+@lru_cache(maxsize=1)
 def get_github_client() -> GitHubClient:
     """Get or create GitHub client instance."""
-    global _client
-    if _client is None:
-        _client = GitHubClient()
-    return _client
+    return GitHubClient()
