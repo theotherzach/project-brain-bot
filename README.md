@@ -2,6 +2,165 @@
 
 A Slack bot that helps teams query project context using Claude AI and RAG (Retrieval-Augmented Generation). Ask questions in natural language and get answers backed by your project's actual data from Linear, Notion, GitHub, Mixpanel, and Datadog.
 
+## Usage Examples
+
+### How to Talk to Brain
+
+**Mention in a channel:**
+```
+@brain what's the status of the auth refactor?
+```
+
+**Send a direct message:**
+```
+Who's working on the payment integration?
+```
+
+**Use the slash command:**
+```
+/brain Are there any active alerts right now?
+```
+
+---
+
+### Basic Queries
+
+**Project status:**
+
+> @brain what's the status of the checkout redesign?
+
+**Meeting context:**
+
+> @brain what did we decide about the auth refactor last week?
+
+**Ticket lookup:**
+
+> @brain who's working on the Stripe integration?
+
+---
+
+### Multi-Source Queries (The Good Stuff)
+
+**Connecting metrics to engineering work:**
+
+> @brain checkout conversion dropped 15% yesterday—are there any related bugs or deploys?
+
+*Pulls from: Mixpanel (conversion data) + Datadog (recent deploys, errors) + Linear (related tickets) + GitHub (recent merges to checkout flow)*
+
+---
+
+**Sprint health check:**
+
+> @brain are we on track for the Q1 launch? Any blockers I should know about?
+
+*Pulls from: Linear (epic progress, blocked tickets) + Notion (sprint planning notes, risk flags) + Datadog (any active alerts on launch-critical services)*
+
+---
+
+**Incident investigation:**
+
+> @brain the API is slow—what changed recently and who should I ping?
+
+*Pulls from: Datadog (latency metrics, alerts) + GitHub (recent PRs merged) + Linear (who owns what) + Notion (on-call schedule if you track it there)*
+
+---
+
+**Customer issue triage:**
+
+> @brain a customer reported checkout failures around 2pm yesterday—what do we know?
+
+*Pulls from: Datadog (error rates at that time) + Linear (any related bug reports) + GitHub (deploys around that window) + Mixpanel (checkout funnel drop)*
+
+---
+
+**Onboarding a new team member:**
+
+> @brain give me the TLDR on the payments service—architecture decisions, current status, and who knows it best
+
+*Pulls from: Notion (architecture docs, meeting notes) + Linear (recent tickets, ownership) + GitHub (top contributors to that repo)*
+
+---
+
+**Exec prep:**
+
+> @brain summarize engineering progress this week—what shipped, what's blocked, and any metrics changes I should mention in the all-hands
+
+*Pulls from: Linear (completed tickets, blockers) + GitHub (merged PRs) + Notion (meeting notes) + Mixpanel (weekly metrics trends) + Datadog (uptime/reliability)*
+
+---
+
+**Root cause analysis:**
+
+> @brain signups dropped 30% last Tuesday—walk me through what might have caused it
+
+*Pulls from: Mixpanel (signup funnel breakdown) + Datadog (any outages or latency spikes) + GitHub (what shipped that day) + Linear (any related bugs filed) + Notion (was there a meeting about this?)*
+
+---
+
+**Dependency tracking:**
+
+> @brain what's blocking the mobile app release and who do I need to follow up with?
+
+*Pulls from: Linear (blocked tickets, dependencies, assignees) + Notion (release planning notes) + GitHub (open PRs that need review)*
+
+---
+
+**Historical context:**
+
+> @brain why did we choose Redis over Postgres for session storage?
+
+*Pulls from: Notion (meeting notes, architecture decision records) + GitHub (PR discussions, ADRs in repo) + Linear (original tickets/spikes)*
+
+---
+
+### Quick Ops Checks
+
+**Morning standup prep:**
+
+> @brain anything on fire?
+
+*Pulls from: Datadog (active alerts) + Linear (P0/P1 bugs) + GitHub (failed CI on main)*
+
+---
+
+**Pre-deploy sanity:**
+
+> @brain how's the system looking right now—safe to deploy?
+
+*Pulls from: Datadog (error rates, latency, active alerts) + Linear (any deploy blockers flagged)*
+
+---
+
+**End of week wrap:**
+
+> @brain what did the team ship this week?
+
+*Pulls from: Linear (completed tickets) + GitHub (merged PRs) + Notion (demo notes if you track them)*
+
+---
+
+### Power User Moves
+
+**Comparative analysis:**
+
+> @brain compare this week's error rate to last week—are we getting better or worse?
+
+---
+
+**Trend spotting:**
+
+> @brain any patterns in the bugs filed this month?
+
+---
+
+**Knowledge discovery:**
+
+> @brain who on the team knows the most about our GraphQL layer?
+
+*Pulls from: GitHub (commit history) + Linear (ticket assignments) + Notion (meeting attendance on related topics)*
+
+---
+
 ## Features
 
 - **Natural Language Queries**: Ask questions about your project in plain English
@@ -141,33 +300,6 @@ See [.env.example](.env.example) for all available configuration options.
    - Description: "Ask Project Brain a question"
 
 6. Install the app to your workspace
-
-## Usage
-
-### In Slack
-
-**Mention the bot in a channel:**
-```
-@Project Brain What's the status of the auth refactor?
-```
-
-**Send a direct message:**
-```
-Who's working on the payment integration?
-```
-
-**Use the slash command:**
-```
-/brain Are there any active alerts right now?
-```
-
-### Example Questions
-
-- "What did we decide in the last sprint planning?"
-- "What's the status of ticket ENG-123?"
-- "Who reviewed the last PR for the API service?"
-- "What's our current user retention rate?"
-- "Are there any critical alerts in production?"
 
 ## Development
 
