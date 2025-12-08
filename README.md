@@ -67,7 +67,7 @@ Who's working on the payment integration?
 
 **Customer issue triage:**
 
-> @brain a customer reported checkout failures around 2pm yesterday—what do we know?
+> @brain a customer reported checkout failures around 2pm yesterday—what do we know, and why was there no Slack alert from Datadog?
 
 *Pulls from: Datadog (error rates at that time) + Linear (any related bug reports) + GitHub (deploys around that window) + Mixpanel (checkout funnel drop)*
 
@@ -75,7 +75,7 @@ Who's working on the payment integration?
 
 **Onboarding a new team member:**
 
-> @brain give me the TLDR on the payments service—architecture decisions, current status, and who knows it best
+> @brain give me the TLDR on the python voice service—architecture decisions, current status, and who knows it best
 
 *Pulls from: Notion (architecture docs, meeting notes) + Linear (recent tickets, ownership) + GitHub (top contributors to that repo)*
 
@@ -91,7 +91,7 @@ Who's working on the payment integration?
 
 **Root cause analysis:**
 
-> @brain signups dropped 30% last Tuesday—walk me through what might have caused it
+> @brain signups dropped 30% last Tuesday—walk me through what might have caused it and suggest how we could set up a Datadog alert to catch this earlier next time
 
 *Pulls from: Mixpanel (signup funnel breakdown) + Datadog (any outages or latency spikes) + GitHub (what shipped that day) + Linear (any related bugs filed) + Notion (was there a meeting about this?)*
 
@@ -155,7 +155,7 @@ Who's working on the payment integration?
 
 **Knowledge discovery:**
 
-> @brain who on the team knows the most about our GraphQL layer?
+> @brain who on the team knows the most about our LLM integrations?
 
 *Pulls from: GitHub (commit history) + Linear (ticket assignments) + Notion (meeting attendance on related topics)*
 
