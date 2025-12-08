@@ -2,25 +2,30 @@
 
 from unittest.mock import MagicMock, patch
 
+import pytest
+
 
 class TestEmbeddings:
     """Tests for embedding generation."""
 
-    @patch("src.retrieval.embeddings.OpenAI")
-    def test_embed_text_success(self, mock_openai, mock_env_vars):
+    @pytest.fixture
+    def mock_openai_client(self):
+        """Create a mock OpenAI client."""
+        with patch("openai.OpenAI") as mock:
+            client = MagicMock()
+            mock.return_value = client
+            yield client
+
+    def test_embed_text_success(self, mock_env_vars, mock_openai_client):
         """Test successful text embedding."""
-        from src.retrieval.embeddings import EmbeddingClient
-
-        # Mock OpenAI response
-        mock_client = MagicMock()
-        mock_openai.return_value = mock_client
-
         mock_response = MagicMock()
         mock_embedding = MagicMock()
         mock_embedding.embedding = [0.1] * 1536
         mock_response.data = [mock_embedding]
         mock_response.usage = MagicMock(total_tokens=10)
-        mock_client.embeddings.create.return_value = mock_response
+        mock_openai_client.embeddings.create.return_value = mock_response
+
+        from src.retrieval.embeddings import EmbeddingClient
 
         client = EmbeddingClient()
         result = client.embed_text("Test text")
@@ -28,12 +33,9 @@ class TestEmbeddings:
         assert len(result) == 1536
         assert all(isinstance(v, float) for v in result)
 
-    @patch("src.retrieval.embeddings.OpenAI")
-    def test_embed_text_empty(self, mock_openai, mock_env_vars):
+    def test_embed_text_empty(self, mock_env_vars, mock_openai_client):
         """Test embedding empty text returns zero vector."""
         from src.retrieval.embeddings import EmbeddingClient
-
-        mock_openai.return_value = MagicMock()
 
         client = EmbeddingClient()
         result = client.embed_text("")
@@ -41,22 +43,17 @@ class TestEmbeddings:
         assert len(result) == 1536
         assert all(v == 0.0 for v in result)
 
-    @patch("src.retrieval.embeddings.OpenAI")
-    def test_embed_batch(self, mock_openai, mock_env_vars):
+    def test_embed_batch(self, mock_env_vars, mock_openai_client):
         """Test batch embedding."""
-        from src.retrieval.embeddings import EmbeddingClient
-
-        # Mock OpenAI response
-        mock_client = MagicMock()
-        mock_openai.return_value = mock_client
-
         mock_response = MagicMock()
         mock_response.data = [
             MagicMock(embedding=[0.1] * 1536),
             MagicMock(embedding=[0.2] * 1536),
         ]
         mock_response.usage = MagicMock(total_tokens=20)
-        mock_client.embeddings.create.return_value = mock_response
+        mock_openai_client.embeddings.create.return_value = mock_response
+
+        from src.retrieval.embeddings import EmbeddingClient
 
         client = EmbeddingClient()
         result = client.embed_batch(["Text 1", "Text 2"])
@@ -68,24 +65,27 @@ class TestEmbeddings:
 class TestVectorStore:
     """Tests for vector store operations."""
 
-    @patch("src.retrieval.vectorstore.Pinecone")
-    @patch("src.retrieval.vectorstore.get_embedding_client")
-    def test_query_filters_by_threshold(self, mock_get_embedding, mock_pinecone, mock_env_vars):
-        """Test that query filters results below similarity threshold."""
-        from src.retrieval.vectorstore import VectorStore
+    @pytest.fixture
+    def mock_pinecone_client(self):
+        """Create a mock Pinecone client."""
+        with patch("pinecone.Pinecone") as mock:
+            pc = MagicMock()
+            mock.return_value = pc
+            pc.list_indexes.return_value = [MagicMock(name="project-brain")]
+            yield pc
 
+    @patch("src.retrieval.vectorstore.get_embedding_client")
+    def test_query_filters_by_threshold(
+        self, mock_get_embedding, mock_env_vars, mock_pinecone_client
+    ):
+        """Test that query filters results below similarity threshold."""
         # Mock embedding client
         mock_embed_client = MagicMock()
         mock_embed_client.embed_text.return_value = [0.1] * 1536
         mock_get_embedding.return_value = mock_embed_client
 
-        # Mock Pinecone
-        mock_pc = MagicMock()
-        mock_pinecone.return_value = mock_pc
-        mock_pc.list_indexes.return_value = [MagicMock(name="project-brain")]
-
         mock_index = MagicMock()
-        mock_pc.Index.return_value = mock_index
+        mock_pinecone_client.Index.return_value = mock_index
 
         # Create matches with different scores
         high_score_match = MagicMock()
@@ -101,6 +101,8 @@ class TestVectorStore:
         mock_results = MagicMock()
         mock_results.matches = [high_score_match, low_score_match]
         mock_index.query.return_value = mock_results
+
+        from src.retrieval.vectorstore import VectorStore
 
         store = VectorStore()
         results = store.query("test query")
@@ -133,7 +135,7 @@ class TestChunking:
         from src.sync.chunking import DocumentChunker
 
         chunker = DocumentChunker()
-        # Create a long document
+        # Create a long document (500 sentences = ~3000 words)
         long_text = " ".join(["This is a test sentence."] * 500)
 
         chunks = chunker.chunk_document(

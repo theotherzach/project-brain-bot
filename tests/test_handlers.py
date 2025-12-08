@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, patch
 class TestSlackHandlers:
     """Tests for Slack bot handlers."""
 
-    def test_extract_question_removes_mention(self):
+    def test_extract_question_removes_mention(self, mock_env_vars):
         """Test that @mentions are removed from questions."""
         from src.bot.handlers import _extract_question
 
@@ -14,7 +14,7 @@ class TestSlackHandlers:
         result = _extract_question(text)
         assert result == "What is the status of the project?"
 
-    def test_extract_question_handles_multiple_mentions(self):
+    def test_extract_question_handles_multiple_mentions(self, mock_env_vars):
         """Test handling of multiple mentions."""
         from src.bot.handlers import _extract_question
 
@@ -22,7 +22,7 @@ class TestSlackHandlers:
         result = _extract_question(text)
         assert result == "Hello"
 
-    def test_extract_question_handles_empty_text(self):
+    def test_extract_question_handles_empty_text(self, mock_env_vars):
         """Test handling of empty text after mention removal."""
         from src.bot.handlers import _extract_question
 
@@ -31,7 +31,7 @@ class TestSlackHandlers:
         assert result == ""
 
     @patch("src.bot.handlers.get_rag_engine")
-    def test_process_question_success(self, mock_get_rag):
+    def test_process_question_success(self, mock_get_rag, mock_env_vars):
         """Test successful question processing."""
         from src.bot.handlers import _process_question
 
@@ -63,7 +63,7 @@ class TestSlackHandlers:
         mock_client.chat_update.assert_called_once()
 
     @patch("src.bot.handlers.get_rag_engine")
-    def test_process_question_handles_error(self, mock_get_rag):
+    def test_process_question_handles_error(self, mock_get_rag, mock_env_vars):
         """Test error handling in question processing."""
         from src.bot.handlers import _process_question
 
@@ -92,7 +92,7 @@ class TestSlackHandlers:
 class TestFormatting:
     """Tests for message formatting."""
 
-    def test_format_response_blocks_basic(self):
+    def test_format_response_blocks_basic(self, mock_env_vars):
         """Test basic response formatting."""
         from src.bot.formatting import format_response_blocks
 
@@ -101,7 +101,7 @@ class TestFormatting:
         assert blocks[0]["type"] == "section"
         assert "Test answer" in blocks[0]["text"]["text"]
 
-    def test_format_response_blocks_with_sources(self):
+    def test_format_response_blocks_with_sources(self, mock_env_vars):
         """Test response formatting with sources."""
         from src.bot.formatting import format_response_blocks
 
@@ -115,7 +115,7 @@ class TestFormatting:
         assert len(blocks) >= 3
         assert any(b["type"] == "divider" for b in blocks)
 
-    def test_format_error_message(self):
+    def test_format_error_message(self, mock_env_vars):
         """Test error message formatting."""
         from src.bot.formatting import format_error_message
 
@@ -123,7 +123,7 @@ class TestFormatting:
         assert len(blocks) >= 1
         assert ":warning:" in blocks[0]["text"]["text"]
 
-    def test_truncate_text_short(self):
+    def test_truncate_text_short(self, mock_env_vars):
         """Test that short text is not truncated."""
         from src.bot.formatting import truncate_text
 
@@ -131,7 +131,7 @@ class TestFormatting:
         result = truncate_text(text, max_length=100)
         assert result == text
 
-    def test_truncate_text_long(self):
+    def test_truncate_text_long(self, mock_env_vars):
         """Test that long text is truncated with ellipsis."""
         from src.bot.formatting import truncate_text
 
