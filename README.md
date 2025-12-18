@@ -1,6 +1,6 @@
 # Project Brain Bot
 
-A Slack bot that helps teams query project context using Claude AI and RAG (Retrieval-Augmented Generation). Ask questions in natural language and get answers backed by your project's actual data from Linear, Notion, GitHub, Mixpanel, and Datadog.
+A Slack bot that helps teams query project context using Claude AI and RAG (Retrieval-Augmented Generation). Ask questions in natural language and get answers backed by your project's actual data from Linear, Notion, GitHub, Mixpanel, and AppSignal.
 
 ## Usage Examples
 
@@ -45,7 +45,7 @@ Who's working on the payment integration?
 
 > @brain checkout conversion dropped 15% yesterday—are there any related bugs or deploys?
 
-*Pulls from: Mixpanel (conversion data) + Datadog (recent deploys, errors) + Linear (related tickets) + GitHub (recent merges to checkout flow)*
+*Pulls from: Mixpanel (conversion data) + AppSignal (recent deploys, errors) + Linear (related tickets) + GitHub (recent merges to checkout flow)*
 
 ---
 
@@ -53,7 +53,7 @@ Who's working on the payment integration?
 
 > @brain are we on track for the Q1 launch? Any blockers I should know about?
 
-*Pulls from: Linear (epic progress, blocked tickets) + Notion (sprint planning notes, risk flags) + Datadog (any active alerts on launch-critical services)*
+*Pulls from: Linear (epic progress, blocked tickets) + Notion (sprint planning notes, risk flags) + AppSignal (any active alerts on launch-critical services)*
 
 ---
 
@@ -61,15 +61,15 @@ Who's working on the payment integration?
 
 > @brain the API is slow—what changed recently and who should I ping?
 
-*Pulls from: Datadog (latency metrics, alerts) + GitHub (recent PRs merged) + Linear (who owns what) + Notion (on-call schedule if you track it there)*
+*Pulls from: AppSignal (latency metrics, alerts) + GitHub (recent PRs merged) + Linear (who owns what) + Notion (on-call schedule if you track it there)*
 
 ---
 
 **Customer issue triage:**
 
-> @brain a customer reported checkout failures around 2pm yesterday—what do we know, and why was there no Slack alert from Datadog?
+> @brain a customer reported checkout failures around 2pm yesterday—what do we know, and why was there no Slack alert from AppSignal?
 
-*Pulls from: Datadog (error rates at that time) + Linear (any related bug reports) + GitHub (deploys around that window) + Mixpanel (checkout funnel drop)*
+*Pulls from: AppSignal (error rates at that time) + Linear (any related bug reports) + GitHub (deploys around that window) + Mixpanel (checkout funnel drop)*
 
 ---
 
@@ -85,15 +85,15 @@ Who's working on the payment integration?
 
 > @brain summarize engineering progress this week—what shipped, what's blocked, and any metrics changes I should mention in the all-hands
 
-*Pulls from: Linear (completed tickets, blockers) + GitHub (merged PRs) + Notion (meeting notes) + Mixpanel (weekly metrics trends) + Datadog (uptime/reliability)*
+*Pulls from: Linear (completed tickets, blockers) + GitHub (merged PRs) + Notion (meeting notes) + Mixpanel (weekly metrics trends) + AppSignal (uptime/reliability)*
 
 ---
 
 **Root cause analysis:**
 
-> @brain signups dropped 30% last Tuesday—walk me through what might have caused it and suggest how we could set up a Datadog alert to catch this earlier next time
+> @brain signups dropped 30% last Tuesday—walk me through what might have caused it and suggest how we could set up an AppSignal alert to catch this earlier next time
 
-*Pulls from: Mixpanel (signup funnel breakdown) + Datadog (any outages or latency spikes) + GitHub (what shipped that day) + Linear (any related bugs filed) + Notion (was there a meeting about this?)*
+*Pulls from: Mixpanel (signup funnel breakdown) + AppSignal (any outages or latency spikes) + GitHub (what shipped that day) + Linear (any related bugs filed) + Notion (was there a meeting about this?)*
 
 ---
 
@@ -119,7 +119,7 @@ Who's working on the payment integration?
 
 > @brain anything on fire?
 
-*Pulls from: Datadog (active alerts) + Linear (P0/P1 bugs) + GitHub (failed CI on main)*
+*Pulls from: AppSignal (active alerts) + Linear (P0/P1 bugs) + GitHub (failed CI on main)*
 
 ---
 
@@ -127,7 +127,7 @@ Who's working on the payment integration?
 
 > @brain how's the system looking right now—safe to deploy?
 
-*Pulls from: Datadog (error rates, latency, active alerts) + Linear (any deploy blockers flagged)*
+*Pulls from: AppSignal (error rates, latency, active alerts) + Linear (any deploy blockers flagged)*
 
 ---
 
@@ -169,7 +169,7 @@ Who's working on the payment integration?
   - **Notion**: Documentation, meeting notes, and specs
   - **GitHub**: PRs, issues, and code
   - **Mixpanel**: Analytics and user behavior metrics
-  - **Datadog**: Monitoring alerts and incidents
+  - **AppSignal**: Monitoring alerts and incidents
 - **RAG-Powered Answers**: Uses embeddings and vector search for accurate, context-aware responses
 - **Automatic Sync**: Background job keeps the vector store updated with fresh data
 - **Smart Caching**: Redis-based caching to minimize API calls
@@ -196,7 +196,7 @@ Who's working on the payment integration?
                     ┌─────┴─────┐
               ┌─────┴─────┬─────┴─────┬─────┴─────┐
               │           │           │           │
-           Linear     Notion     GitHub    Mixpanel/DD
+           Linear     Notion     GitHub    Mixpanel/AS
 ```
 
 ## Quick Start
@@ -207,7 +207,7 @@ Who's working on the payment integration?
 - Redis
 - Slack App with Bot Token and App Token
 - API keys for: Anthropic, OpenAI, Pinecone
-- (Optional) API keys for: Linear, Notion, GitHub, Mixpanel, Datadog
+- (Optional) API keys for: Linear, Notion, GitHub, Mixpanel, AppSignal
 
 ### Installation
 
@@ -347,7 +347,8 @@ src/
 │   ├── notion.py           # Notion API
 │   ├── github.py           # GitHub API
 │   ├── mixpanel.py         # Mixpanel API
-│   └── datadog.py          # Datadog API
+│   ├── datadog.py          # Datadog API
+│   └── appsignal.py        # AppSignal API
 ├── retrieval/
 │   ├── embeddings.py       # OpenAI embeddings
 │   ├── vectorstore.py      # Pinecone client
