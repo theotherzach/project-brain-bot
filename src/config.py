@@ -62,6 +62,10 @@ class Settings(BaseSettings):
     datadog_app_key: str = Field(default="", description="Datadog Application Key")
     datadog_site: str = Field(default="datadoghq.com", description="Datadog site")
 
+    # AppSignal
+    appsignal_api_key: str = Field(default="", description="AppSignal API Key")
+    appsignal_app_id: str = Field(default="", description="AppSignal App ID")
+
     # Sync settings
     sync_interval_minutes: int = Field(default=30, description="Background sync interval")
     chunk_size: int = Field(default=1000, description="Document chunk size for embeddings")
