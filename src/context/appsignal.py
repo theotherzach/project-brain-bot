@@ -218,7 +218,7 @@ class AppSignalClient:
 
                 severity = incident.get("severity", "unknown")
                 content_parts = [
-                    f"Status: Active",
+                    "Status: Active",
                     f"Severity: {severity}",
                 ]
 
