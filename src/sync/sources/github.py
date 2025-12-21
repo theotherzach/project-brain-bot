@@ -22,6 +22,10 @@ def sync_github() -> int:
         vector_store = get_vector_store()
         chunker = get_chunker()
 
+        # Clear old vectors for this source before syncing
+        logger.info("github_clearing_old_vectors")
+        vector_store.delete_by_source("github")
+
         # Fetch documents from all configured repos
         items = github_client.get_all_repo_documents()
 
