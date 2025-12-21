@@ -22,6 +22,10 @@ def sync_notion() -> int:
         vector_store = get_vector_store()
         chunker = get_chunker()
 
+        # Clear old vectors for this source before syncing
+        logger.info("notion_clearing_old_vectors")
+        vector_store.delete_by_source("notion")
+
         # Fetch pages from all configured databases
         pages = notion_client.get_all_database_pages()
 

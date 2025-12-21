@@ -22,6 +22,10 @@ def sync_linear() -> int:
         vector_store = get_vector_store()
         chunker = get_chunker()
 
+        # Clear old vectors for this source before syncing
+        logger.info("linear_clearing_old_vectors")
+        vector_store.delete_by_source("linear")
+
         # Fetch recent issues
         issues = linear_client.get_recent_issues(limit=100)
 

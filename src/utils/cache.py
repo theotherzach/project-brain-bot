@@ -20,12 +20,20 @@ T = TypeVar("T")
 _redis_client: redis.Redis | None = None
 
 
-def get_redis_client() -> redis.Redis:
-    """Get or create Redis client."""
+def get_redis_client() -> redis.Redis | None:
+    """Get or create Redis client. Returns None if Redis is unavailable."""
     global _redis_client
     if _redis_client is None:
         settings = get_settings()
-        _redis_client = redis.from_url(settings.redis_url, decode_responses=True)
+        try:
+            client = redis.from_url(settings.redis_url, decode_responses=True)
+            # Test connection
+            client.ping()
+            _redis_client = client
+            logger.info("redis_connected", url=settings.redis_url)
+        except redis.RedisError as e:
+            logger.warning("redis_unavailable", error=str(e))
+            return None
     return _redis_client
 
 
@@ -57,10 +65,11 @@ def cached(
 
             try:
                 client = get_redis_client()
-                cached_value = client.get(cache_key)
-                if cached_value is not None:
-                    logger.debug("cache_hit", key=cache_key)
-                    return json.loads(cached_value)
+                if client is not None:
+                    cached_value = client.get(cache_key)
+                    if cached_value is not None:
+                        logger.debug("cache_hit", key=cache_key)
+                        return json.loads(cached_value)
             except redis.RedisError as e:
                 logger.warning("cache_read_error", error=str(e), key=cache_key)
 
@@ -68,8 +77,9 @@ def cached(
 
             try:
                 client = get_redis_client()
-                client.setex(cache_key, ttl, json.dumps(result, default=str))
-                logger.debug("cache_set", key=cache_key, ttl=ttl)
+                if client is not None:
+                    client.setex(cache_key, ttl, json.dumps(result, default=str))
+                    logger.debug("cache_set", key=cache_key, ttl=ttl)
             except redis.RedisError as e:
                 logger.warning("cache_write_error", error=str(e), key=cache_key)
 
@@ -101,10 +111,11 @@ def cached_async(
 
             try:
                 client = get_redis_client()
-                cached_value = client.get(cache_key)
-                if cached_value is not None:
-                    logger.debug("cache_hit", key=cache_key)
-                    return json.loads(cached_value)
+                if client is not None:
+                    cached_value = client.get(cache_key)
+                    if cached_value is not None:
+                        logger.debug("cache_hit", key=cache_key)
+                        return json.loads(cached_value)
             except redis.RedisError as e:
                 logger.warning("cache_read_error", error=str(e), key=cache_key)
 
@@ -112,8 +123,9 @@ def cached_async(
 
             try:
                 client = get_redis_client()
-                client.setex(cache_key, ttl, json.dumps(result, default=str))
-                logger.debug("cache_set", key=cache_key, ttl=ttl)
+                if client is not None:
+                    client.setex(cache_key, ttl, json.dumps(result, default=str))
+                    logger.debug("cache_set", key=cache_key, ttl=ttl)
             except redis.RedisError as e:
                 logger.warning("cache_write_error", error=str(e), key=cache_key)
 
@@ -136,6 +148,8 @@ def invalidate_cache(pattern: str) -> int:
     """
     try:
         client = get_redis_client()
+        if client is None:
+            return 0
         keys = list(client.scan_iter(match=pattern))
         if keys:
             deleted = client.delete(*keys)

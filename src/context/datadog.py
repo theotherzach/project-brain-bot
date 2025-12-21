@@ -169,12 +169,16 @@ class DatadogClient:
                 if attrs.get("postmortem_id"):
                     content_parts.append("Postmortem: Available")
 
+                # Construct proper incident URL
+                public_id = attrs.get("public_id", incident["id"])
+                incident_url = f"https://app.{self.settings.datadog_site}/incidents/{public_id}"
+
                 doc = ContextDocument(
                     id=f"datadog-incident-{incident['id']}",
                     source="datadog",
                     title=f"Incident: {attrs.get('title', 'Unnamed')}",
                     content="\n".join(content_parts),
-                    url=attrs.get("public_id"),
+                    url=incident_url,
                     metadata={
                         "type": "incident",
                         "incident_id": incident["id"],

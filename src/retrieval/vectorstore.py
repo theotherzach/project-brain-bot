@@ -13,6 +13,14 @@ from src.utils.logging import get_logger
 logger = get_logger(__name__)
 
 
+# Embedding dimensions by model
+EMBEDDING_DIMENSIONS = {
+    "text-embedding-3-small": 1536,
+    "text-embedding-3-large": 3072,
+    "text-embedding-ada-002": 1536,
+}
+
+
 class VectorStore:
     """Pinecone vector store wrapper."""
 
@@ -22,6 +30,12 @@ class VectorStore:
         self.index_name = self.settings.pinecone_index_name
         self.namespace = self.settings.pinecone_namespace
         self._index = None
+        self._dimensions = EMBEDDING_DIMENSIONS.get(self.settings.embedding_model, 1536)
+        logger.info(
+            "vectorstore_initialized",
+            model=self.settings.embedding_model,
+            dimensions=self._dimensions,
+        )
 
     @property
     def index(self):
@@ -31,10 +45,14 @@ class VectorStore:
             existing_indexes = [idx.name for idx in self.pc.list_indexes()]
 
             if self.index_name not in existing_indexes:
-                logger.info("creating_pinecone_index", name=self.index_name)
+                logger.info(
+                    "creating_pinecone_index",
+                    name=self.index_name,
+                    dimensions=self._dimensions,
+                )
                 self.pc.create_index(
                     name=self.index_name,
-                    dimension=1536,  # text-embedding-3-small dimensions
+                    dimension=self._dimensions,
                     metric="cosine",
                     spec=ServerlessSpec(
                         cloud="aws",
