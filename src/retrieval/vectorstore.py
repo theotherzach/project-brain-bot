@@ -30,9 +30,7 @@ class VectorStore:
         self.index_name = self.settings.pinecone_index_name
         self.namespace = self.settings.pinecone_namespace
         self._index = None
-        self._dimensions = EMBEDDING_DIMENSIONS.get(
-            self.settings.embedding_model, 1536
-        )
+        self._dimensions = EMBEDDING_DIMENSIONS.get(self.settings.embedding_model, 1536)
         logger.info(
             "vectorstore_initialized",
             model=self.settings.embedding_model,
